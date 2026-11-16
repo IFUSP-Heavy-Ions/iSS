@@ -129,6 +129,19 @@ class FSSW {
 
     std::string OSCAR_header_filename_, OSCAR_output_filename_;
 
+    // PTB (Pratt-Torrieri-Bernhard) modified-equilibrium delta f
+    //   f = z_Pi/det(A) f_eq(sqrt(m^2 + |A^{-1} p|^2)/T)  in the LRF,
+    //   A_ij = (1 + lambda_Pi) delta_ij + pi_ij/(2 beta_pi).
+    int deltaf_model_;               // 0: linear delta f, 1: PTB
+    double ptb_min_eigenvalue_;      // regulator, see prepare_PTB_cells()
+    std::vector<std::array<double, 6>> ptb_A_;  // xx, xy, xz, yy, yz, zz
+    std::vector<double> ptb_z_;                 // z_Pi per cell
+    // bulk matching table: rows in T, columns in u = ln(1 + lambda_Pi)
+    std::vector<double> ptb_T_grid_;
+    std::vector<double> ptb_u_grid_;
+    std::vector<std::vector<double>> ptb_e_;    // kinetic e(T, u) [GeV/fm^3]
+    std::vector<std::vector<double>> ptb_P_;    // kinetic P(T, u) [GeV/fm^3]
+
  public:
     FSSW(std::shared_ptr<RandomUtil::Random> ran_gen,
            Table* chosen_particles_in,
@@ -206,6 +219,22 @@ class FSSW {
         const double mass, const int sign,
         const int baryon, const int strange, const int charge,
         const FO_surf_LRF *surf,
+        const std::vector<double> visCoefficients,
+        const double deltaf_qmu_coeff,
+        double &pT, double &phi, double &y_minus_eta_s);
+    void build_PTB_bulk_table(const double T_min, const double T_max);
+    void get_PTB_bulk_parameters(const double T, const double bulkPi,
+                                 double &lambda_Pi, double &z_Pi,
+                                 bool &clamped) const;
+    void prepare_PTB_cells();
+    int sample_momentum_PTB(
+        const double mass, const int sign, const double mu,
+        const FO_surf_LRF *surf, const std::array<double, 6> &A,
+        double &pT, double &phi, double &y_minus_eta_s);
+    int sample_momentum(
+        const double mass, const int sign,
+        const int baryon, const int strange, const int charge,
+        const long FO_idx, const FO_surf_LRF *surf,
         const std::vector<double> visCoefficients,
         const double deltaf_qmu_coeff,
         double &pT, double &phi, double &y_minus_eta_s);
