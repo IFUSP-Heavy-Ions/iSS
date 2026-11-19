@@ -50,6 +50,7 @@ class FSSW {
     bool bINCLUDE_SHEAR_DELTAF, bINCLUDE_BULK_DELTAF, bINCLUDE_DIFFUSION_DELTAF;
     int NEoS_deltaf_kind_;        // 0: 14-mom, 1: CE
     int bulk_deltaf_kind_;
+    double deltaf_newRTA_gamma_;  // bulk_deltaf_kind 31: tau_R ~ E^gamma
     int iEoS_MUSIC_;
     bool flagRegVisYield_;
 
@@ -187,6 +188,32 @@ class FSSW {
     void load_CE_deltaf_NEOSBQS_table(string filepath);
     void load_22mom_deltaf_NEOSBQS_table(string filepath);
     void load_deltaf_qmu_coeff_table(std::string filename);
+
+    // RTA delta f with an energy-dependent relaxation time, tau_R ~ E^gamma
+    // (bulk_deltaf_kind 31, no conserved charges): coefficient tables in T
+    // for gamma = 0, 0.5, 1, 1.5 and thermodynamic integrals in m/T
+    double deltaf_newRTA_T0_, deltaf_newRTA_dT_;
+    double deltaf_newRTA_gamma0_, deltaf_newRTA_dgamma_;
+    std::vector<std::vector<double>> deltaf_coeff_newRTA_shear_;
+    std::vector<std::vector<double>> deltaf_coeff_newRTA_bulk_betaPi_;
+    std::vector<std::vector<double>> deltaf_coeff_newRTA_bulk_phi_;
+    std::vector<double> deltaf_coeff_newRTA_bulk_cs2_;
+    double sf_J_mMin_, sf_J_dm_;
+    double sf_J_gammaMin_, sf_J_dgamma_;
+    std::vector<std::vector<double>> sf_logJgamma_BE_;
+    std::vector<std::vector<double>> sf_logJgamma_FD_;
+    std::vector<std::vector<double>> sf_logJgammaplus2_BE_;
+    std::vector<std::vector<double>> sf_logJgammaplus2_FD_;
+    std::vector<std::vector<double>> sf_logJ2_BE_;
+    std::vector<std::vector<double>> sf_logJ2_FD_;
+    void load_deltaf_table_newRTA(std::string filepath);
+    void loadThermoIntegrals(std::string thermoFileName, const int ncol,
+                             std::vector<std::vector<double>> &data);
+    void getNewRTACoefficients(const double Tdec,
+                               std::vector<double> &visCoefficients);
+    void getNewRTAThermoCoefficients(
+        const double m, std::vector<double> &thermoCoefficients,
+        const bool bosonFlag);
     double get_deltaf_qmu_coeff(double T, double muB);
 
     void check_samples_in_memory();
