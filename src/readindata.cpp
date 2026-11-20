@@ -319,6 +319,8 @@ void read_FOdata::read_in_chemical_potentials(
             N_stableparticle = 0;
         } else if (iEOS_MUSIC_ == 20) {       // BEST
             N_stableparticle = 0;
+        } else if (iEOS_MUSIC_ == 24) {       // tabulated EoS at mu_B = 0
+            N_stableparticle = 0;
         } else {
             messager << "invalid iEOS_MUSIC_: " << iEOS_MUSIC_;
             messager.flush("error");
