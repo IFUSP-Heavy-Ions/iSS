@@ -27,11 +27,11 @@ url=https://raw.githubusercontent.com/jordissm/PDG2021Plus/$COMMIT/$FILE
 curl -fsSL --retry 3 "$url" -o "$tmp/massorder.dat"
 echo "$SHA256  $tmp/massorder.dat" | sha256sum -c --quiet -
 
-(cd "$tmp" && python3 -I "$here/convert_massorder_pdg.py" massorder.dat \
+(cd "$tmp" && python3 "$here/convert_massorder_pdg.py" massorder.dat \
      PDG2021Plus)
 cp "$tmp/pdg-PDG2021Plus.dat" "$tmp/chosen_particles_PDG2021Plus.dat" \
    "$tables/"
-python3 -I "$here/make_hrg_eos.py" "$tables/pdg-PDG2021Plus.dat" \
+python3 "$here/make_hrg_eos.py" "$tables/pdg-PDG2021Plus.dat" \
     "$tables/EOS_tables/HRGEOS_PST-PDG2021Plus.dat"
 cat > "$tables/PDG2021Plus_SOURCE.txt" <<EOF
 PDG2021+ hadron list, converted for iSS by utilities/get_PDG2021Plus.sh
