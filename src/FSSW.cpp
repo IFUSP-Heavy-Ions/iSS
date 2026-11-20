@@ -186,7 +186,8 @@ FSSW::FSSW(std::shared_ptr<RandomUtil::Random> ran_gen,
     if (paraRdr->getVal("perform_decays") == 1) {
         flag_perform_decays_ = true;
         decayer_ptr_ = std::unique_ptr<particle_decay>(new particle_decay(
-                                ran_gen_ptr, afterburner_type_, table_path_));
+                ran_gen_ptr, afterburner_type_, table_path_,
+                static_cast<int>(paraRdr->getVal("particle_list", 0))));
     } else {
         flag_perform_decays_ = false;
     }

@@ -1119,13 +1119,9 @@ void read_FOdata::read_in_HRG_EOS() {
         eos_filename += "HRGEOS_PST-";
     }
 
-    if (afterburner_type_ == AfterburnerType::SMASH) {
-        eos_filename += "SMASH.dat";
-    } else if (afterburner_type_ == AfterburnerType::UrQMD) {
-        eos_filename += "urqmd_v3.3+.dat";
-    } else {
-        eos_filename += "s95pv1.dat";
-    }
+    eos_filename += particle_list_name(
+        static_cast<int>(paraRdr->getVal("particle_list", 0)),
+        afterburner_type_) + ".dat";
 
     std::ifstream eosFile(eos_filename.c_str());
     if (!eosFile.good()) {
@@ -1206,14 +1202,11 @@ int read_FOdata::read_resonances_list(std::vector<particle_info> &particle) {
     if (echoLevel_ > 0) {
         cout << " -- Read in particle resonance decay table...";
     }
-    std::string reso_filename;
-    if (afterburner_type_ == AfterburnerType::SMASH) {
-        reso_filename = particle_table_path_ + "/pdg-SMASH.dat";
-    } else if (afterburner_type_ == AfterburnerType::UrQMD) {
-        reso_filename = particle_table_path_ + "/pdg-urqmd_v3.3+.dat";
-    } else {
-        reso_filename = particle_table_path_ + "/pdg-s95pv1.dat";
-    }
+    std::string reso_filename = (
+        particle_table_path_ + "/pdg-"
+        + particle_list_name(
+            static_cast<int>(paraRdr->getVal("particle_list", 0)),
+            afterburner_type_) + ".dat");
     std::ifstream resofile(reso_filename.c_str());
     if (!resofile.good()) {
         cout << "[Error] Can not found pdg file: " << reso_filename << endl;

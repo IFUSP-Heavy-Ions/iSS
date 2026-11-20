@@ -118,8 +118,9 @@ EmissionFunctionArray::EmissionFunctionArray(
 
     flag_perform_decays = paraRdr->getVal("perform_decays");
     if (flag_perform_decays == 1) {
-        decayer_ptr = new particle_decay(ran_gen_ptr, afterburner_type_,
-                                         table_path_);
+        decayer_ptr = new particle_decay(
+            ran_gen_ptr, afterburner_type_, table_path_,
+            static_cast<int>(paraRdr->getVal("particle_list", 0)));
     }
 
     // allocate internal buffer

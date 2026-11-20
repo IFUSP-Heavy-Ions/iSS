@@ -176,16 +176,12 @@ void iSS::set_random_seed(int randomSeed_in) {
 int iSS::generate_samples() {
     // skip others except for these particle
     Table chosen_particles;
-    if (afterburner_type_ == AfterburnerType::SMASH) {
-        chosen_particles.loadTableFromFile(
-            particle_table_path_ + "/chosen_particles_SMASH.dat");
-    } else if (afterburner_type_ == AfterburnerType::UrQMD) {
-        chosen_particles.loadTableFromFile(
-            particle_table_path_ + "/chosen_particles_urqmd_v3.3+.dat");
-    } else {
-        chosen_particles.loadTableFromFile(particle_table_path_
-                                           + "/chosen_particles_s95p-v1.dat");
-    }
+    chosen_particles.loadTableFromFile(
+        particle_table_path_ + "/chosen_particles_"
+        + particle_list_name(
+            static_cast<int>(paraRdr_ptr->getVal("particle_list", 0)),
+            afterburner_type_, true)
+        + ".dat");
 
     if (echoLevel_ > 0) {
         messager.info("Start computation and generating samples ...");

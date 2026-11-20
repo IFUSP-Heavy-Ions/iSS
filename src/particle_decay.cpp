@@ -12,8 +12,9 @@ using namespace std;
 
 particle_decay::particle_decay(shared_ptr<RandomUtil::Random> ran_gen,
                                AfterburnerType afterburner_type,
-                               string table_path) :
-        table_path_(table_path), afterburner_type_(afterburner_type) {
+                               string table_path, int particle_list) :
+        table_path_(table_path), afterburner_type_(afterburner_type),
+        particle_list_(particle_list) {
     ran_gen_ptr = ran_gen;
     resonance_table.clear();
     read_resonances_list();
@@ -33,14 +34,9 @@ particle_decay::~particle_decay() {
 int particle_decay::read_resonances_list() {
     double eps = 1e-15;
     //cout << " -- Read in particle resonance decay table..." << endl;
-    std::string reso_filename;
-    if (afterburner_type_ == AfterburnerType::SMASH) {
-        reso_filename = table_path_ + "/pdg-SMASH.dat";
-    } else if (afterburner_type_ == AfterburnerType::UrQMD) {
-        reso_filename = table_path_ + "/pdg-urqmd_v3.3+.dat";
-    } else {
-        reso_filename = table_path_ + "/pdg-s95pv1.dat";
-    }
+    std::string reso_filename = (
+        table_path_ + "/pdg-"
+        + particle_list_name(particle_list_, afterburner_type_) + ".dat");
     std::ifstream resofile(reso_filename.c_str());
     if (!resofile.good()) {
         cout << "[Error] Can not found pdg file: " << reso_filename << endl;

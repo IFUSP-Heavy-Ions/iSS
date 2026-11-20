@@ -1,6 +1,8 @@
 #ifndef DATA_STRUCT_H_
 #define DATA_STRUCT_H_
 
+#include <cstdlib>
+#include <iostream>
 #include <string>
 #include <array>
 #include <vector>
@@ -23,6 +25,30 @@ enum class AfterburnerType {
     JAM,
     PDG_Decay,
 };
+
+
+//! The particle list's name in the table files iSS reads:
+//! iSS_tables/pdg-<name>.dat (species and decays),
+//! iSS_tables/chosen_particles_<name>.dat (species sampled) and
+//! iSS_tables/EOS_tables/HRGEOS_PST-<name>.dat (its hadron gas, regulateEOS).
+//! By default (parameter particle_list = 0) the list of the afterburner;
+//! particle_list = 21 selects PDG2021+ (arXiv:2309.01737) whatever the
+//! afterburner, whose own list must then be the same.  chosen_list asks for
+//! the name of the chosen-particle file, which differs for s95p-v1.
+inline std::string particle_list_name(int particle_list,
+                                      AfterburnerType afterburner,
+                                      bool chosen_list = false) {
+    if (particle_list == 21) return "PDG2021Plus";
+    if (particle_list != 0) {
+        std::cerr << "[Error] unknown particle_list = " << particle_list
+                  << " (0: the afterburner's list, 21: PDG2021Plus)"
+                  << std::endl;
+        exit(1);
+    }
+    if (afterburner == AfterburnerType::SMASH) return "SMASH";
+    if (afterburner == AfterburnerType::UrQMD) return "urqmd_v3.3+";
+    return chosen_list ? "s95p-v1" : "s95pv1";
+}
 
 
 typedef struct {

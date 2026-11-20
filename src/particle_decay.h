@@ -13,13 +13,15 @@ class particle_decay {
  private:
     const std::string table_path_;
     const AfterburnerType afterburner_type_;
+    const int particle_list_;
     std::vector<particle_info*> resonance_table;
     std::shared_ptr<RandomUtil::Random> ran_gen_ptr;
 
  public:
     particle_decay(std::shared_ptr<RandomUtil::Random> ran_gen,
                    AfterburnerType afterburner_type,
-                   std::string table_path="iSS_tables");
+                   std::string table_path="iSS_tables",
+                   int particle_list=0);
     ~particle_decay();
 
     //! This function reads in resonance decay table
